@@ -1,4 +1,5 @@
 class Movimiento {
+  String id;
   double cantidad;
   String tipo;
   String categoria;
@@ -11,5 +12,6 @@ class Movimiento {
     required this.categoria,
     required this.concepto,
     required this.fecha,
+    required this.id,
   });
 }

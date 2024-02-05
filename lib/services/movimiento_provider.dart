@@ -20,8 +20,8 @@ class MovimientoProvider with ChangeNotifier {
     }
   }
 
-  void eliminarMovimiento(Movimiento Movimiento) {
-    _movimientos.remove(Movimiento);
+  void eliminarMovimiento(String id) {
+    _movimientos.removeWhere((movimiento) => movimiento.id == id);
     notifyListeners();
   }
 
@@ -31,7 +31,6 @@ class MovimientoProvider with ChangeNotifier {
         .fold(0.0, (sum, current) => sum + current.cantidad);
   }
 
-  // Método para calcular la sumatoria de los egresos
   double getTotalEgresos() {
     return _movimientos
         .where((movimiento) => movimiento.tipo == "Egreso")

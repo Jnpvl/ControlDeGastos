@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:money/components/customAppBar.dart';
 import 'package:provider/provider.dart';
 import 'package:money/services/categoria_provider.dart';
@@ -38,16 +37,18 @@ class _MovimientosViewState extends State<MovimientosView> {
           Provider.of<MovimientoProvider>(context, listen: false);
       double cantidad = double.tryParse(_cantidadController.text) ?? 0;
       DateTime fechaActual = DateTime.now();
+      String movimientoId = DateTime.now().millisecondsSinceEpoch.toString();
 
-      movimientoProvider.agregarMovimiento(
-        Movimiento(
-          cantidad: cantidad,
-          tipo: _tipoMovimiento ?? '',
-          categoria: _categoria ?? '',
-          concepto: _conceptoController.text,
-          fecha: fechaActual,
-        ),
+      Movimiento nuevoMovimiento = Movimiento(
+        id: movimientoId,
+        cantidad: cantidad,
+        tipo: _tipoMovimiento ?? '',
+        categoria: _categoria ?? '',
+        concepto: _conceptoController.text,
+        fecha: fechaActual,
       );
+
+      movimientoProvider.agregarMovimiento(nuevoMovimiento);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Movimiento guardado')),
@@ -97,7 +98,7 @@ class _MovimientosViewState extends State<MovimientosView> {
                     validator: (value) {
                       final double? parsedValue = double.tryParse(value ?? '');
                       if (parsedValue == null) {
-                        return 'Por favor ingresa una cantidad válida';
+                        return 'Por favor ingresa solo caracteres numericos';
                       }
                       return null;
                     },

@@ -62,6 +62,7 @@ class _CategoriasViewState extends State<CategoriasView> {
     if (_formKey.currentState!.validate()) {
       if (_categoriaActual == null) {
         categoriaProvider.agregarCategoria(Categoria(
+          id: _nombreController.text,
           nombre: _nombreController.text,
           color: _colorSeleccionado,
           icono: _iconoSeleccionado,
@@ -70,6 +71,7 @@ class _CategoriasViewState extends State<CategoriasView> {
         categoriaProvider.editarCategoria(
           _categoriaActual!,
           Categoria(
+            id: _nombreController.text,
             nombre: _nombreController.text,
             color: _colorSeleccionado,
             icono: _iconoSeleccionado,

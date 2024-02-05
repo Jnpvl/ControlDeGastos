@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +9,9 @@ import 'package:money/models/categoria.dart';
 
 class MovimientosCard extends StatelessWidget {
   final int? maxItems;
-  MovimientosCard({this.maxItems});
+  final bool enableDelete;
+
+  MovimientosCard({this.maxItems, this.enableDelete = true});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,6 @@ class MovimientosCard extends StatelessWidget {
           itemBuilder: (context, index) {
             int invertedIndex =
                 movimientoProvider.movimientos.length - 1 - index;
-
             if (maxItems != null) {
               invertedIndex =
                   max(movimientoProvider.movimientos.length - index - 1, 0);
@@ -47,13 +47,45 @@ class MovimientosCard extends StatelessWidget {
                 movimientoProvider.movimientos[invertedIndex];
             Categoria categoria = categoriaProvider.categorias.firstWhere(
               (cat) => cat.nombre == movimiento.categoria,
-              orElse: () =>
-                  Categoria(nombre: '', color: Colors.grey, icono: Icons.error),
+              orElse: () => Categoria(
+                  id: '', nombre: '', color: Colors.grey, icono: Icons.error),
             );
             String fechaFormateada =
                 DateFormat('dd/MM/yyyy').format(movimiento.fecha);
 
-            return _card(categoria, movimiento, fechaFormateada);
+            final item = _card(categoria, movimiento, fechaFormateada);
+            if (enableDelete) {
+              return Dismissible(
+                key: Key(movimiento.id.toString()),
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) {
+                  movimientoProvider.eliminarMovimiento(movimiento.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Movimiento eliminado")));
+                },
+                background: Container(
+                  color: Colors.red,
+                  child: Align(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Icon(Icons.delete, color: Colors.white),
+                        Text(" Eliminar",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                            textAlign: TextAlign.right),
+                        SizedBox(width: 20),
+                      ],
+                    ),
+                    alignment: Alignment.centerRight,
+                  ),
+                ),
+                child: item,
+              );
+            } else {
+              return item;
+            }
           },
         ),
       );

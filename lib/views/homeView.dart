@@ -38,7 +38,10 @@ class HomeView extends StatelessWidget {
             ],
           ),
           SizedBox(height: 5),
-          MovimientosCard(maxItems: 4)
+          MovimientosCard(
+            maxItems: 4,
+            enableDelete: false,
+          )
         ],
       ),
     );
