@@ -70,13 +70,20 @@ class _MovimientosViewState extends State<MovimientosView> {
   Widget build(BuildContext context) {
     final categoriaProvider = Provider.of<CategoriaProvider>(context);
 
+    //List<DropdownMenuItem<String>> categoriaItems = categoriaProvider.categorias
+    //    .map((categoria) => DropdownMenuItem<String>(
+    //          value: categoria.id ,
+    //          child: Text(categoria.nombre),
+    //        ))
+    //    .toList();
+
     List<DropdownMenuItem<String>> categoriaItems = categoriaProvider.categorias
         .map((categoria) => DropdownMenuItem<String>(
               value: categoria.nombre,
               child: Text(categoria.nombre),
             ))
         .toList();
-
+//
     return Scaffold(
       backgroundColor: Colors.deepPurple[50],
       appBar: CustomAppBar(

@@ -4,6 +4,7 @@ import 'package:money/components/customAppBar.dart';
 import 'package:money/models/categoria.dart';
 import 'package:money/models/icon_mapping.dart';
 import 'package:money/services/categoria_provider.dart';
+import 'package:money/services/movimiento_provider.dart';
 import 'package:provider/provider.dart';
 
 class CategoriasView extends StatefulWidget {
@@ -91,9 +92,24 @@ class _CategoriasViewState extends State<CategoriasView> {
     });
   }
 
-  void _eliminarCategoria(
-      Categoria categoria, CategoriaProvider categoriaProvider) {
-    categoriaProvider.eliminarCategoria(categoria);
+  bool esCategoriaEnUso(String categoriaNombre, BuildContext context) {
+    final movimientoProvider =
+        Provider.of<MovimientoProvider>(context, listen: false);
+    return movimientoProvider.movimientos
+        .any((movimiento) => movimiento.categoria == categoriaNombre);
+  }
+
+  void _eliminarCategoria(Categoria categoria,
+      CategoriaProvider categoriaProvider, BuildContext context) {
+    if (!esCategoriaEnUso(categoria.nombre, context)) {
+      categoriaProvider.eliminarCategoria(categoria);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Categoría eliminada con éxito.')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text('Esta categoría está en uso y no puede ser eliminada.')));
+    }
   }
 
   void _mostrarPickerColor(BuildContext context) {
@@ -159,7 +175,7 @@ class _CategoriasViewState extends State<CategoriasView> {
                           IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () => _eliminarCategoria(
-                                categoria, categoriaProvider),
+                                categoria, categoriaProvider, context),
                           ),
                         ],
                       ),
