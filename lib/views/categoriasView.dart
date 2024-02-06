@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:money/components/customAppBar.dart';
 import 'package:money/models/categoria.dart';
+import 'package:money/models/icon_mapping.dart';
 import 'package:money/services/categoria_provider.dart';
 import 'package:provider/provider.dart';
 
 class CategoriasView extends StatefulWidget {
+  const CategoriasView({super.key});
+
   @override
   _CategoriasViewState createState() => _CategoriasViewState();
 }
 
 class _CategoriasViewState extends State<CategoriasView> {
-  final List<Categoria> _categorias = [];
   final _nombreController = TextEditingController();
   Color _colorSeleccionado = Colors.blue;
   IconData _iconoSeleccionado = Icons.category;
@@ -24,14 +26,6 @@ class _CategoriasViewState extends State<CategoriasView> {
     super.dispose();
   }
 
-  final List<IconData> _iconosDisponibles = [
-    Icons.home,
-    Icons.business,
-    Icons.school,
-    Icons.pets,
-    Icons.shopping_cart,
-  ];
-
   void _mostrarPickerIcono(BuildContext context) {
     showDialog(
       context: context,
@@ -42,11 +36,11 @@ class _CategoriasViewState extends State<CategoriasView> {
             child: Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
-              children: _iconosDisponibles.map((IconData icono) {
+              children: iconosMapeados.entries.map((entry) {
                 return IconButton(
-                  icon: Icon(icono),
+                  icon: Icon(entry.value),
                   onPressed: () {
-                    setState(() => _iconoSeleccionado = icono);
+                    setState(() => _iconoSeleccionado = entry.value);
                     Navigator.of(context).pop();
                   },
                 );
@@ -60,21 +54,26 @@ class _CategoriasViewState extends State<CategoriasView> {
 
   void _agregarEditarCategoria(CategoriaProvider categoriaProvider) {
     if (_formKey.currentState!.validate()) {
+      String iconoString = iconosMapeados.entries
+          .firstWhere((entry) => entry.value == _iconoSeleccionado,
+              orElse: () => const MapEntry("default", Icons.category))
+          .key;
+
       if (_categoriaActual == null) {
         categoriaProvider.agregarCategoria(Categoria(
-          id: _nombreController.text,
+          id: DateTime.now().toString(),
           nombre: _nombreController.text,
-          color: _colorSeleccionado,
-          icono: _iconoSeleccionado,
+          color: _colorSeleccionado.value,
+          icono: iconoString,
         ));
       } else {
         categoriaProvider.editarCategoria(
           _categoriaActual!,
           Categoria(
-            id: _nombreController.text,
+            id: _categoriaActual!.id,
             nombre: _nombreController.text,
-            color: _colorSeleccionado,
-            icono: _iconoSeleccionado,
+            color: _colorSeleccionado.value,
+            icono: iconoString,
           ),
         );
       }
@@ -87,15 +86,14 @@ class _CategoriasViewState extends State<CategoriasView> {
     setState(() {
       _categoriaActual = categoria;
       _nombreController.text = categoria.nombre;
-      _colorSeleccionado = categoria.color;
-      _iconoSeleccionado = categoria.icono;
+      _colorSeleccionado = Color(categoria.color);
+      _iconoSeleccionado = iconosMapeados[categoria.icono] ?? Icons.category;
     });
   }
 
-  void _eliminarCategoria(Categoria categoria) {
-    setState(() {
-      _categorias.remove(categoria);
-    });
+  void _eliminarCategoria(
+      Categoria categoria, CategoriaProvider categoriaProvider) {
+    categoriaProvider.eliminarCategoria(categoria);
   }
 
   void _mostrarPickerColor(BuildContext context) {
@@ -134,7 +132,7 @@ class _CategoriasViewState extends State<CategoriasView> {
         backgroundColor: Colors.deepPurple[50],
         appBar: CustomAppBar(
           showTitle: true,
-          titleText: 'Categorias',
+          titleText: 'Categorías',
         ),
         body: Container(
           margin: const EdgeInsets.all(20),
@@ -147,7 +145,10 @@ class _CategoriasViewState extends State<CategoriasView> {
                     final categoria = categoriaProvider.categorias[index];
                     return ListTile(
                       title: Text(categoria.nombre),
-                      leading: Icon(categoria.icono, color: categoria.color),
+                      leading: Icon(
+                        iconosMapeados[categoria.icono] ?? Icons.category,
+                        color: Color(categoria.color),
+                      ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -157,7 +158,8 @@ class _CategoriasViewState extends State<CategoriasView> {
                           ),
                           IconButton(
                             icon: Icon(Icons.delete),
-                            onPressed: () => _eliminarCategoria(categoria),
+                            onPressed: () => _eliminarCategoria(
+                                categoria, categoriaProvider),
                           ),
                         ],
                       ),

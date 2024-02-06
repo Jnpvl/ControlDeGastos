@@ -6,9 +6,9 @@ import 'package:money/components/otherServices.dart';
 
 // ignore: must_be_immutable
 class HomeView extends StatelessWidget {
-  HomeView({super.key});
-
   int maxCardsToShow = 3;
+
+  HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +21,16 @@ class HomeView extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
+          // ignore: prefer_const_constructors
           BalanceCard(),
           OtherServices(),
-          SizedBox(height: 5),
-          Row(
+          const SizedBox(height: 5),
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
+                padding: EdgeInsets.only(left: 15, right: 15),
                 child: Text(
                   'Actividad reciente',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -37,7 +38,7 @@ class HomeView extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           MovimientosCard(
             maxItems: 4,
             enableDelete: false,

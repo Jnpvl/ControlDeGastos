@@ -7,6 +7,8 @@ import 'package:money/models/Movimiento.dart';
 import 'package:intl/intl.dart';
 
 class MovimientosView extends StatefulWidget {
+  const MovimientosView({super.key});
+
   @override
   State<MovimientosView> createState() => _MovimientosViewState();
 }

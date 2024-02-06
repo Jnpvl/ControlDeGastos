@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:money/models/icon_mapping.dart';
 import 'package:provider/provider.dart';
 import 'package:money/services/movimiento_provider.dart';
 import 'package:money/services/categoria_provider.dart';
@@ -12,6 +13,10 @@ class MovimientosCard extends StatelessWidget {
   final bool enableDelete;
 
   MovimientosCard({this.maxItems, this.enableDelete = true});
+
+  IconData _getIconData(String iconName) {
+    return iconosMapeados[iconName] ?? Icons.error;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +53,15 @@ class MovimientosCard extends StatelessWidget {
             Categoria categoria = categoriaProvider.categorias.firstWhere(
               (cat) => cat.nombre == movimiento.categoria,
               orElse: () => Categoria(
-                  id: '', nombre: '', color: Colors.grey, icono: Icons.error),
+                  id: '',
+                  nombre: '',
+                  color: Colors.grey.value,
+                  icono: 'error_outline'),
             );
             String fechaFormateada =
                 DateFormat('dd/MM/yyyy').format(movimiento.fecha);
 
-            final item = _card(categoria, movimiento, fechaFormateada);
+            final item = _card(categoria, movimiento, fechaFormateada, context);
             if (enableDelete) {
               return Dismissible(
                 key: Key(movimiento.id.toString()),
@@ -92,8 +100,8 @@ class MovimientosCard extends StatelessWidget {
     }
   }
 
-  Container _card(
-      Categoria categoria, Movimiento movimiento, String fechaFormateada) {
+  Widget _card(Categoria categoria, Movimiento movimiento,
+      String fechaFormateada, BuildContext context) {
     return Container(
       padding: EdgeInsets.only(left: 0, right: 15),
       height: 70,
@@ -113,8 +121,8 @@ class MovimientosCard extends StatelessWidget {
                 width: 70,
                 margin: EdgeInsets.all(5),
                 child: Icon(
-                  categoria.icono,
-                  color: categoria.color,
+                  _getIconData(categoria.icono),
+                  color: Color(categoria.color),
                   size: 60,
                 ),
               ),
@@ -122,14 +130,10 @@ class MovimientosCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${capitalizeFirstLetter(movimiento.concepto)}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text('${fechaFormateada}')
+                  Text(capitalizeFirstLetter(movimiento.concepto),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(fechaFormateada),
                 ],
               ),
             ],
@@ -139,18 +143,15 @@ class MovimientosCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "${signo(movimiento.tipo)} \$${movimiento.cantidad.toStringAsFixed(2)}",
-                style: TextStyle(
-                    fontSize: 18,
-                    color: textColor(movimiento.tipo),
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                '${movimiento.tipo}',
-                style: TextStyle(
-                    color: textColor(movimiento.tipo),
-                    fontWeight: FontWeight.bold),
-              )
+                  "${signo(movimiento.tipo)} \$${movimiento.cantidad.toStringAsFixed(2)}",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: textColor(movimiento.tipo),
+                      fontWeight: FontWeight.bold)),
+              Text(movimiento.tipo,
+                  style: TextStyle(
+                      color: textColor(movimiento.tipo),
+                      fontWeight: FontWeight.bold)),
             ],
           ),
         ],
@@ -158,16 +159,11 @@ class MovimientosCard extends StatelessWidget {
     );
   }
 
-  String capitalizeFirstLetter(String text) {
-    if (text.isEmpty) return text;
-    return text[0].toUpperCase() + text.substring(1).toLowerCase();
-  }
+  String capitalizeFirstLetter(String text) => text.isEmpty
+      ? ''
+      : '${text[0].toUpperCase()}${text.substring(1).toLowerCase()}';
 
-  String signo(String tipo) {
-    return tipo == "Ingreso" ? "+" : "-";
-  }
+  String signo(String tipo) => tipo == "Ingreso" ? "+" : "-";
 
-  Color textColor(String tipo) {
-    return tipo == "Ingreso" ? Colors.green : Colors.red;
-  }
+  Color textColor(String tipo) => tipo == "Ingreso" ? Colors.green : Colors.red;
 }
