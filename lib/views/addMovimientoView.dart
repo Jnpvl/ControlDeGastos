@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money/components/customAlert.dart';
 import 'package:money/components/customAppBar.dart';
 import 'package:provider/provider.dart';
 import 'package:money/services/categoria_provider.dart';
@@ -52,8 +53,10 @@ class _MovimientosViewState extends State<MovimientosView> {
 
       movimientoProvider.agregarMovimiento(nuevoMovimiento);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Movimiento guardado')),
+      CustomAlert.showInfoDialog(
+        context: context,
+        title: 'Movimiento guardado',
+        message: 'Puede visualizarlo en la vista de movimientos!',
       );
 
       _formKey.currentState!.reset();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money/components/customAlert.dart';
 import 'package:money/views/categoriasView.dart';
 
 class OtherServices extends StatelessWidget {
@@ -51,23 +52,11 @@ class OtherServices extends StatelessWidget {
                   label: 'presupuesto',
                   color: Colors.blue,
                   onTap: () {
-                    showDialog(
+                    CustomAlert.showInfoDialog(
                       context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Presupuesto'),
-                          content: Text(
-                              'Funcionalidad no disponible, gracias por su compension'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('Cerrar'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
+                      title: 'No disponible',
+                      message:
+                          'Funcionalidad no disponible, gracias por su comprension',
                     );
                   },
                 ),
@@ -76,23 +65,11 @@ class OtherServices extends StatelessWidget {
                     label: 'análisis',
                     color: Colors.purple,
                     onTap: () {
-                      showDialog(
+                      CustomAlert.showInfoDialog(
                         context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('analisis'),
-                            content: Text(
-                                'Funcionalidad no disponible, gracias por su compension'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('Cerrar'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
+                        title: 'No disponible',
+                        message:
+                            'Funcionalidad no disponible, gracias por su comprension',
                       );
                     }),
               ],

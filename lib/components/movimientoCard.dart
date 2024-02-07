@@ -66,10 +66,31 @@ class MovimientosCard extends StatelessWidget {
               return Dismissible(
                 key: Key(movimiento.id.toString()),
                 direction: DismissDirection.endToStart,
+                confirmDismiss: (direction) async {
+                  final bool res = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Confirmar"),
+                        content: const Text(
+                            "¿Estás seguro de que deseas eliminar este movimiento?"),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text("Cancelar"),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text("Eliminar"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return res;
+                },
                 onDismissed: (direction) {
                   movimientoProvider.eliminarMovimiento(movimiento.id);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Movimiento eliminado")));
                 },
                 background: Container(
                   color: Colors.red,

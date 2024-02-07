@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:money/components/customAlert.dart';
 import 'package:money/components/customAppBar.dart';
 import 'package:money/models/categoria.dart';
 import 'package:money/models/icon_mapping.dart';
@@ -17,7 +18,7 @@ class CategoriasView extends StatefulWidget {
 class _CategoriasViewState extends State<CategoriasView> {
   final _nombreController = TextEditingController();
   Color _colorSeleccionado = Colors.blue;
-  IconData _iconoSeleccionado = Icons.category;
+  IconData _iconoSeleccionado = Icons.money;
   Categoria? _categoriaActual;
   final _formKey = GlobalKey<FormState>();
 
@@ -102,13 +103,20 @@ class _CategoriasViewState extends State<CategoriasView> {
   void _eliminarCategoria(Categoria categoria,
       CategoriaProvider categoriaProvider, BuildContext context) {
     if (!esCategoriaEnUso(categoria.nombre, context)) {
-      categoriaProvider.eliminarCategoria(categoria);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Categoría eliminada con éxito.')));
+      CustomAlert.showConfirmationDialog(
+        context: context,
+        title: 'Eliminar Categoría',
+        message: '¿Estás seguro de que deseas eliminar esta categoría?',
+        onConfirm: () {
+          categoriaProvider.eliminarCategoria(categoria);
+        },
+      );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content:
-              Text('Esta categoría está en uso y no puede ser eliminada.')));
+      CustomAlert.showInfoDialog(
+        context: context,
+        title: 'Categoría en Uso',
+        message: 'Esta categoría está en uso y no puede ser eliminada.',
+      );
     }
   }
 
