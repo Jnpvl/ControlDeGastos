@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money/components/balanceCard.dart';
+import 'package:money/components/bannerexample.dart';
 import 'package:money/components/customAppBar.dart';
 import 'package:money/components/movimientoCard.dart';
 import 'package:money/components/otherServices.dart';
@@ -21,6 +22,7 @@ class HomeView extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          BannerAdWidget(),
           const SizedBox(height: 10),
           // ignore: prefer_const_constructors
           BalanceCard(),
