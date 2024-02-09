@@ -8,7 +8,7 @@ class BannerAdWidget extends StatefulWidget {
 
 class _BannerAdWidgetState extends State<BannerAdWidget> {
   final BannerAd myBanner = BannerAd(
-    adUnitId: 'ca-app-pub-3940256099942544/6300978111', // Usar ID de anuncio real para producción
+    adUnitId: 'ca-app-pub-3940256099942544/6300978111', //cambiar id real
     size: AdSize.banner,
     request: AdRequest(),
     listener: BannerAdListener(
@@ -19,6 +19,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
       },
     ),
   );
+  
 
   @override
   void initState() {
