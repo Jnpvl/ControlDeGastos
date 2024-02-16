@@ -62,4 +62,8 @@ class MovimientoProvider with ChangeNotifier {
         .where((movimiento) => movimiento.tipo == "Egreso")
         .fold(0.0, (sum, current) => sum + current.cantidad);
   }
+
+  Set<String> get tiposDeMovimiento {
+    return _movimientos.map((mov) => mov.tipo).toSet();
+  }
 }

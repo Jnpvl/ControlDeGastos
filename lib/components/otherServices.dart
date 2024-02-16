@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money/components/customAlert.dart';
+import 'package:money/views/analisisView.dart';
 import 'package:money/views/categoriasView.dart';
 
 class OtherServices extends StatelessWidget {
@@ -65,11 +66,9 @@ class OtherServices extends StatelessWidget {
                     label: 'análisis',
                     color: Colors.purple,
                     onTap: () {
-                      CustomAlert.showInfoDialog(
-                        context: context,
-                        title: 'No disponible',
-                        message:
-                            'Funcionalidad no disponible, gracias por su comprension',
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AnalisisView()),
                       );
                     }),
               ],
