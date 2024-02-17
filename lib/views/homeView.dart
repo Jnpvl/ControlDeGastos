@@ -22,7 +22,7 @@ class HomeView extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         // Center(child: BannerAdWidget()),
+          Center(child: BannerAdWidget()),
           const SizedBox(height: 10),
           // ignore: prefer_const_constructors
           BalanceCard(),
