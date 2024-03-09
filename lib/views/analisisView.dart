@@ -1,13 +1,15 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:money/services/movimiento_provider.dart';
 import 'package:money/services/categoria_provider.dart';
 import 'package:money/models/Movimiento.dart';
 import 'package:money/components/customAppBar.dart';
-import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:excel/excel.dart';
 import 'package:share/share.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AnalisisView extends StatefulWidget {
   const AnalisisView({Key? key}) : super(key: key);
@@ -79,7 +81,7 @@ class _AnalisisViewState extends State<AnalisisView> {
                 ),
                 IconButton(
                   icon: Icon(Icons.download),
-                  onPressed: () => descargarExcel(movimientosFiltrados),
+                  onPressed: () => crearYGuardarExcel(movimientosFiltrados),
                 ),
                 Expanded(
                   child: DropdownButton<String>(
@@ -106,8 +108,37 @@ class _AnalisisViewState extends State<AnalisisView> {
     );
   }
 
-  Future<void> descargarExcel(List<Movimiento> movimientos) async {
-    // Implementa la lógica para descargar Excel aquí
-    print('excel');
+  Future<void> crearYGuardarExcel(List<Movimiento> movimientos) async {
+    final xlsio.Workbook workbook = xlsio.Workbook();
+    final xlsio.Worksheet sheet = workbook.worksheets[0];
+    sheet.getRangeByName('A1').setText('Tipo');
+    sheet.getRangeByName('B1').setText('Cantidad');
+    sheet.getRangeByName('C1').setText('Categoría');
+    sheet.getRangeByName('D1').setText('Concepto');
+
+    for (int i = 0; i < movimientos.length; i++) {
+      sheet.getRangeByName('A${i + 2}').setText(movimientos[i].tipo);
+      sheet.getRangeByName('B${i + 2}').setNumber(movimientos[i].cantidad);
+      sheet.getRangeByName('C${i + 2}').setText(movimientos[i].categoria);
+      sheet.getRangeByName('D${i + 2}').setText(movimientos[i].concepto);
+    }
+
+    final List<int> bytes = workbook.saveAsStream();
+    workbook.dispose();
+
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String path = '${directory.path}/Movimientos.xlsx';
+    final File file = File(path);
+    await file.writeAsBytes(bytes, flush: true);
+    //Share.shareFiles([file.path], text: 'Aquí están tus movimientos exportados.');
+    // OpenFile.open(path);
+
+ 
+    try {
+     // final result = await OpenFile.open(path); para abrir directamente pero pss no me dejo
+      Share.shareFiles([file.path], text: 'Aquí están tus movimientos exportados.'); //es para compartir
+    } catch (e) {
+      print("Error al abrir el archivo: $e");
+    }
   }
 }
